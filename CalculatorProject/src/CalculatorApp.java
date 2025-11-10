@@ -11,8 +11,14 @@ public class CalculatorApp extends JFrame implements ActionListener {
 
     public CalculatorApp() {
         // Ρυθμίσεις παραθύρου
-        setTitle("Κομπιουτεράκι");
-        setSize(400, 500);
+
+        setTitle("🧮 Κομπιουτεράκι - Ανανεωμένο UI");
+        setSize(420, 600);
+        getContentPane().setBackground(new Color(45, 45, 45)); // σκούρο φόντο
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -22,9 +28,10 @@ public class CalculatorApp extends JFrame implements ActionListener {
         display.setEditable(false);
         add(display, BorderLayout.NORTH);
 
-        // Κουμπιά αριθμών και πράξεων
+        // Κουμπιά αριθμών και πράξεων (μοντέρνο UI)
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 4, 10, 10));
+        panel.setBackground(new Color(60, 60, 60));
 
         String[] buttons = {
                 "7", "8", "9", "/",
@@ -36,11 +43,27 @@ public class CalculatorApp extends JFrame implements ActionListener {
         for (String text : buttons) {
             JButton button = new JButton(text);
             button.setFont(new Font("Arial", Font.BOLD, 22));
+            button.setFocusPainted(false);
+            button.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
+            button.setForeground(Color.WHITE);
+
+            if (text.equals("C")) {
+                button.setBackground(new Color(200, 70, 70)); // κόκκινο
+            } else if (text.equals("=")) {
+                button.setBackground(new Color(70, 130, 180)); // μπλε
+            } else if (text.matches("[/*\\-+]")) {
+                button.setBackground(new Color(90, 90, 90)); // πιο σκούρο για πράξεις
+            } else {
+                button.setBackground(new Color(100, 100, 100)); // γκρι για αριθμούς
+            }
+
             button.addActionListener(this);
             panel.add(button);
         }
 
         add(panel, BorderLayout.CENTER);
+
+
         setVisible(true);
     }
 
