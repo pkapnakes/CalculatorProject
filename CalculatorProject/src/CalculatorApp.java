@@ -62,8 +62,17 @@ public class CalculatorApp extends JFrame implements ActionListener {
         // Υπολογισμός (=)
         else if (command.equals("=")) {
             try {
+                // Έλεγχος για σωστή έκφραση (π.χ. "3+5")
+                if (display.getText().isEmpty() || !display.getText().matches(".*[\\+\\-\\*/].*")) {
+                    display.setText("Σφάλμα: Άκυρη πράξη");
+                    return;
+                }
+
                 String[] parts = display.getText().split("[\\+\\-\\*/]");
-                if (parts.length < 2) return;
+                if (parts.length < 2) {
+                    display.setText("Σφάλμα: Ελλιπής είσοδος");
+                    return;
+                }
 
                 num1 = Double.parseDouble(parts[0]);
                 num2 = Double.parseDouble(parts[1]);
@@ -80,26 +89,31 @@ public class CalculatorApp extends JFrame implements ActionListener {
                         break;
                     case '/':
                         if (num2 == 0) {
-                            display.setText("Σφάλμα: Διαίρεση με 0");
-                            return;
+                            display.setText("Σφάλμα: Διαίρεση με 0!");
+                            return; // Διακόπτουμε τον υπολογισμό
                         }
                         result = num1 / num2;
                         break;
                 }
+
                 display.setText(String.valueOf(result));
+
             } catch (Exception ex) {
-                display.setText("Σφάλμα");
+                display.setText("Σφάλμα!");
             }
         }
 
         // Τελεστές (+, -, *, /)
         else {
-            if (!display.getText().isEmpty()) {
+            if (!display.getText().isEmpty() && !display.getText().endsWith("+") &&
+                    !display.getText().endsWith("-") && !display.getText().endsWith("*") &&
+                    !display.getText().endsWith("/")) {
                 operator = command.charAt(0);
                 display.setText(display.getText() + operator);
             }
         }
     }
+
 
     public static void main(String[] args) {
         new CalculatorApp();
