@@ -3,12 +3,59 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.LinkedList;
+import java.util.Queue;
 public class CalculatorApp extends JFrame implements ActionListener {
-
+    private Queue<String> history = new LinkedList<>();
     private JTextField display;
     private double num1, num2, result;
     private char operator;
 
+
+    public void addToHistory(String operation) {
+        if (history.size() >= 5) {
+            history.poll(); // αφαιρεί το παλαιότερο αν έχουμε πάνω από 5
+        }
+        history.add(operation);
+    }
+
+    public void printHistory() {
+        System.out.println("Ιστορικό τελευταίων πράξεων:");
+        for (String op : history) {
+            System.out.println(op);
+        }
+    }
+    public double add(double a, double b) {
+        double result = a + b;
+        addToHistory(a + " + " + b + " = " + result);
+        return result;
+    }
+    public double subtract(double a, double b) {
+        double result = a - b;
+        addToHistory(a + " - " + b + " = " + result);
+        return result;
+    }
+    public double multiply(double a, double b) {
+        double result = a * b;
+        addToHistory(a + " * " + b + " = " + result);
+        return result;
+    }
+    public double divide(double a, double b) {
+        if (b == 0) {
+            addToHistory(a + " / " + b + " = ERROR (Division by zero)");
+            throw new ArithmeticException("Δεν μπορείς να διαιρέσεις με το μηδέν!");
+        }
+        double result = a / b;
+        addToHistory(a + " / " + b + " = " + result);
+        return result;
+    }
+    public void printHistory() {
+        System.out.println("📜 Ιστορικό τελευταίων 5 πράξεων:");
+        for (String op : history) {
+            System.out.println(op);
+        }
+    }
+}
     public CalculatorApp() {
         // Ρυθμίσεις παραθύρου
         setTitle("Κομπιουτεράκι");
