@@ -10,27 +10,25 @@ public class CalculatorApp extends JFrame implements ActionListener {
     private char operator;
 
     public CalculatorApp() {
-        // Ρυθμίσεις παραθύρου
         setTitle("Κομπιουτεράκι");
         setSize(400, 500);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Πεδίο εμφάνισης
         display = new JTextField();
         display.setFont(new Font("Arial", Font.BOLD, 28));
         display.setEditable(false);
         add(display, BorderLayout.NORTH);
 
-        // Κουμπιά αριθμών και πράξεων
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 4, 10, 10));
+        panel.setLayout(new GridLayout(5, 4, 10, 10)); // μία γραμμή παραπάνω
 
         String[] buttons = {
                 "7", "8", "9", "/",
                 "4", "5", "6", "*",
                 "1", "2", "3", "-",
-                "0", "C", "=", "+"
+                "0", "C", "=", "+",
+                "√", "^", "%"
         };
 
         for (String text : buttons) {
@@ -48,36 +46,38 @@ public class CalculatorApp extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-        // Αν πατηθεί αριθμός
         if (command.charAt(0) >= '0' && command.charAt(0) <= '9') {
             display.setText(display.getText() + command);
         }
-
-        // Καθαρισμός (C)
         else if (command.equals("C")) {
             display.setText("");
             num1 = num2 = result = 0;
         }
-
-        // Υπολογισμός (=)
+        else if (command.equals("√")) {
+            try {
+                double value = Double.parseDouble(display.getText());
+                if (value < 0) {
+                    display.setText("Σφάλμα: Αρνητικός αριθμός");
+                } else {
+                    result = Math.sqrt(value);
+                    display.setText(String.valueOf(result));
+                }
+            } catch (Exception ex) {
+                display.setText("Σφάλμα");
+            }
+        }
         else if (command.equals("=")) {
             try {
-                String[] parts = display.getText().split("[\\+\\-\\*/]");
+                String[] parts = display.getText().split("[\\+\\-\\*/\\^%]");
                 if (parts.length < 2) return;
 
                 num1 = Double.parseDouble(parts[0]);
                 num2 = Double.parseDouble(parts[1]);
 
                 switch (operator) {
-                    case '+':
-                        result = num1 + num2;
-                        break;
-                    case '-':
-                        result = num1 - num2;
-                        break;
-                    case '*':
-                        result = num1 * num2;
-                        break;
+                    case '+': result = num1 + num2; break;
+                    case '-': result = num1 - num2; break;
+                    case '*': result = num1 * num2; break;
                     case '/':
                         if (num2 == 0) {
                             display.setText("Σφάλμα: Διαίρεση με 0");
@@ -85,14 +85,14 @@ public class CalculatorApp extends JFrame implements ActionListener {
                         }
                         result = num1 / num2;
                         break;
+                    case '^': result = Math.pow(num1, num2); break;
+                    case '%': result = (num1 * num2) / 100; break;
                 }
                 display.setText(String.valueOf(result));
             } catch (Exception ex) {
                 display.setText("Σφάλμα");
             }
         }
-
-        // Τελεστές (+, -, *, /)
         else {
             if (!display.getText().isEmpty()) {
                 operator = command.charAt(0);
